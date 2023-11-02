@@ -1,2 +1,2 @@
 # software_engineering_scripts
- Scripts used in school to help with projects
+random scripts used in school to help with projects. for safe keeping
