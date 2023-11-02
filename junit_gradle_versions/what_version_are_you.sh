@@ -1,13 +1,13 @@
 #!/bin/bash
-ACCESS_TOKEN="<sneaky>"
+ACCESS_TOKEN="sneaky"
 
 # List of GitHub Repos
 # repos=(
-#     "https://github.com/wordpress-mobile/WordPress-Android.git"
-#     "https://github.com/commons-app/apps-android-commons.git"
-#     "https://github.com/fossasia/open-event-organizer-android.git"
-#     "https://github.com/steve-goldman/volksempfaenger.git"
-#     "https://github.com/openMF/mifos-mobile.git"
+    # "https://github.com/wordpress-mobile/WordPress-Android.git"
+    # "https://github.com/commons-app/apps-android-commons.git"
+    # "https://github.com/fossasia/open-event-organizer-android.git"
+    # "https://github.com/steve-goldman/volksempfaenger.git"
+    # "https://github.com/tomszilagyi/svhu1972.git"
 # )
 
 csv_file="$1"
@@ -32,7 +32,7 @@ for repo in "${repos[@]}"; do
     # Remove "https://github.com/" from the beginning and ".git" from the end of each string
     repo_name="${repo#https://github.com/}"
     repo_name="${repo_name%.git}"
-    # echo $repo_name 
+    echo $repo_name 
     # fetch the build.gradle file contents from root 
     response=$(curl -s -H "Authorization: token $ACCESS_TOKEN" "$GITHUB_API_URL/$repo_name/contents/build.gradle")
     # echo "$response"
@@ -52,16 +52,23 @@ for repo in "${repos[@]}"; do
                 results+=("$repo, $junit_version")
             else
                 # Try in the app level gradle file
+                # echo "else"
                 response=$(curl -s -H "Authorization: token $ACCESS_TOKEN" "$GITHUB_API_URL/$repo_name/contents/app/build.gradle")
                 build_gradle_content=$(echo "$response" | jq -r '.content' | base64 --decode)
+                # if [ -n "$build_gradle_content" ]; then
+                    #echo "FOUND"
+                    # echo $build_gradle_content
+                # else 
+                    #echo "IT WASNT FOUND"
+                # fi
                 junit_line=$(echo "$build_gradle_content" | grep -E "junit:junit:[0-9.]+")
-
+                # echo $junit_line
                 option2=$(echo "$build_gradle_content" | grep -o "junit:junit:[^']*")
                 if [ -n "$option2" ]; then
-                    echo "$repo, $option2"
+                    # echo "$repo, $option2"
                     results+=("$repo, $option2")
                 else 
-                    echo "$repo, JUnit Version not found"
+                   #  echo "$repo, NOT FOUND"
                     results+=("$repo, NOT FOUND")
                 fi
             fi
@@ -76,5 +83,5 @@ for repo in "${repos[@]}"; do
 done
 
 for result in "${results[@]}"; do
-    echo "$result"
+    echo "$result" >> repos_result.csv
 done
