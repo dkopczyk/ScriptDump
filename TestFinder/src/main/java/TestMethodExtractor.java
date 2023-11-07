@@ -11,16 +11,10 @@ import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.visitor.filter.TypeFilter;
 
 public class TestMethodExtractor {
-  public static void main(String[] args) {
+  public static void extractAndAppendResults(String path, String repoLink, String resultPath){
+    // Run the Spoon analysis
     Launcher launcher = new Launcher();
-
-    // What're you analyzing?
-    String path = "/Users/dorotakopczyk/Workspace/steps-app/src/";
-    String repoLink = "https://github.com/onaio/steps-app.git";
-    String resultPath = "/Users/dorotakopczyk/Workspace/software_engineering_scripts/TestFinder/results/oneLiners.txt";
     launcher.addInputResource(path);
-
-    // Run the analysis
     launcher.run();
 
     // Get the model
@@ -39,10 +33,9 @@ public class TestMethodExtractor {
 
     for (CtMethod<?> testMethod : methods) {
       CtClass<?> whatClass = testMethod.getParent(CtClass.class);
-      CtStatement body = testMethod.getBody();
       int assertCount = 0;
       int verifyCount = 0;
-      System.out.println("Found @Test method: " + testMethod.getSimpleName() + " in " + whatClass.getSimpleName());
+      // System.out.println("Found @Test method: " + testMethod.getSimpleName() + " in " + whatClass.getSimpleName());
 
       // Analyze how often an assert or verify is called
       // CtInvocation is a Java method or constructor invocation
@@ -58,12 +51,11 @@ public class TestMethodExtractor {
       }
 
       // Summarize the results for the individual method
-      System.out.println("Assert Count: " + assertCount + " Verify Count: " + verifyCount);
+      // System.out.println("Assert Count: " + assertCount + " Verify Count: " + verifyCount);
       if (assertCount == 1 && verifyCount == 0) {
         oneAssertion++;
         String data =  repoLink + "," + whatClass.getSimpleName() + "," + testMethod.getSimpleName() + "," + testMethod.getBody().toString().replace("\n", " ");
         writeToFile(resultPath, data);
-        System.out.println(body);
       } else if (assertCount > 1 && verifyCount == 0) {
         greaterThanOneAssertionNoVerify++;
       } else if (assertCount == 0 && verifyCount > 0) {
@@ -76,11 +68,7 @@ public class TestMethodExtractor {
     }
 
     System.out.println("Total number of tests in " + path + " is " + methods.size());
-    System.out.println("Tests with just one assertion, no verify: " + oneAssertion);
-    System.out.println("Tests with greater than one assertion, but no verify: " + greaterThanOneAssertionNoVerify);
-    System.out.println("Tests with only verify: " + verifyOnlyTest);
-    System.out.println("Tests with a combination of assert and verify: " + comboTest);
-    System.out.println("Tests with nothing: " + noNothing);
+    System.out.println(repoLink + "," + oneAssertion + "," + (greaterThanOneAssertionNoVerify + verifyOnlyTest + comboTest + noNothing) );
   }
 
   private static boolean isAssertMethodCall(CtInvocation methodCall) {

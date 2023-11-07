@@ -1,0 +1,1 @@
+/Users/dorotakopczyk/Workspace/steps-app/src/, https://github.com/onaio/steps-app.git

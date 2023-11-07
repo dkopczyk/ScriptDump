@@ -6,5 +6,11 @@ In particular, count the various types of asserts a unit test can have. Should a
 ## To Run:
 ### From IntelliJ
 + Open the project
-+ On the `TestMethodExtractor` file, double click and Build
-+ On the `TestMethodExtractor` file, double click and Run
++ On the `TestMethodExtractor` file, double click and Build module TestFinder
++ On the `TestMethodExtractor` file, double click and Run module TestFinder
+
+### From Terminal Using Maven
++ Navigate to the project
++ `mvn compile`
++ `mvn exec:java -Dexec.mainClass="TestMethodExtractor"`
+  + TODO, fix dependencies generating results
