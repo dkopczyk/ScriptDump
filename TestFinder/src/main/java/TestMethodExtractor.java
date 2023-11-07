@@ -13,6 +13,7 @@ import spoon.reflect.visitor.filter.TypeFilter;
 public class TestMethodExtractor {
   public static void extractAndAppendResults(String path, String repoLink, String resultPath){
     // Run the Spoon analysis
+    System.out.println("Path: " + path);
     Launcher launcher = new Launcher();
     launcher.addInputResource(path);
     launcher.run();
