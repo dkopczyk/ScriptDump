@@ -1,25 +1,16 @@
 #!/bin/bash
 
-# Define the target directory
 workspace_dir="/Users/dorotakopczyk/Workspace"
 
-# Create the directory if it doesn't exist
 mkdir -p "$workspace_dir"
 
-# Loop through the list of repositories
 while IFS= read -r repo_url
 do
-    # Extract the repository name from the URL
     repo_name=$(basename "$repo_url" .git)
-    
-    # Clone the repository to the workspace directory
     git clone "$repo_url" "$workspace_dir/$repo_name"
-    
-    # Create the entry for the text file
     text_entry="$workspace_dir/$repo_name,$repo_url"
     
     # Append the entry to the text file
-    # software_engineering_scripts/bulk_cloner/clone_my_repos.sh
     echo "$text_entry" >> "$workspace_dir/software_engineering_scripts/bulk_cloner/repo_list.txt"
 done <<EOL
 https://github.com/guavabot/marsh-permissions.git
