@@ -30,8 +30,8 @@ public class TestMethodExtractor {
     int verifyOnlyTest = 0;
     int comboTest = 0;
     int noNothing = 0;
-    // For each test method we found, let's start analyzing it.
 
+    // For each test method we found, let's start analyzing it.
     for (CtMethod<?> testMethod : methods) {
       CtClass<?> whatClass = testMethod.getParent(CtClass.class);
       int assertCount = 0;
