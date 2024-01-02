@@ -26,14 +26,12 @@ results=()
 GITHUB_API_URL="https://api.github.com/repos"
 
 # curl https://api.github.com/repos/airbnb/javascript/contents/package.json | jq -r ".content" | base64 --decode
-# Loop through the list of repositories
 for repo in "${repos[@]}"; do
 
     # Remove "https://github.com/" from the beginning and ".git" from the end of each string
     repo_name="${repo#https://github.com/}"
     repo_name="${repo_name%.git}"
     echo $repo_name 
-    # fetch the build.gradle file contents from root 
     response=$(curl -s -H "Authorization: token $ACCESS_TOKEN" "$GITHUB_API_URL/$repo_name/contents/build.gradle")
     # echo "$response"
 
@@ -45,7 +43,7 @@ for repo in "${repos[@]}"; do
             # echo "build.gradle Content in $repo_name:"
             # echo "$build_gradle_content"
 
-            # Use grep to find the junitVersion in the build.gradle file
+            # find the junitVersion in the build.gradle file
             junit_version=$(echo "$build_gradle_content" | grep -oiE '^\s*jUnitVersion\s*=\s*["'\'']?[0-9.]+["'\'']?' | grep -oE '[0-9.]+')
 
             if [ -n "$junit_version" ]; then
@@ -65,7 +63,6 @@ for repo in "${repos[@]}"; do
                 # echo $junit_line
                 option2=$(echo "$build_gradle_content" | grep -o "junit:junit:[^']*")
                 if [ -n "$option2" ]; then
-                    # echo "$repo, $option2"
                     results+=("$repo, $option2")
                 else 
                    #  echo "$repo, NOT FOUND"
